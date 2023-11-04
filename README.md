@@ -1,3 +1,6 @@
+Assignment 2: Meme Generator
+
+```
 meme-generator/
 │
 ├── app.py                  # The Flask application.
@@ -38,3 +41,4 @@ meme-generator/
 │           └── ...
 │
 └── requirements.txt        # Python dependencies required for the project.
+```
