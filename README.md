@@ -1,7 +1,8 @@
 # pip install python-docx
-
+```
 pip install python-docx
 sudo apt-get install poppler-utils
+```
 
 ## Package
 - Flask
@@ -16,15 +17,18 @@ sudo apt-get install poppler-utils
 
 
 ## Project Diagram
-
+```
 MemeGeneratorProject/
 │
 ├── MemeEngine/                  # Module for meme generation logic
 │   ├── __init__.py
 │   ├── MemeEngine.py            # Core meme generation functionality
-│   └── fonts/                   # Directory for font files
-│       ├── Font1.ttf
-│       └── Font2.ttf
+│
+│
+├── fonts/                   # Directory for font files
+│   ├── Calibri Bold.TTF
+│   ├── Calibri Regular.ttf  
+│   └── LilitaOne-Regular.ttf    
 │
 ├── QuoteEngine/                 # Module for quote handling logic
 │   ├── __init__.py
@@ -48,7 +52,10 @@ MemeGeneratorProject/
 ├── _data/                       # Data files (quotes, images)
 │   ├── DogQuotes/
 │   └── SimpleLines/
+│   └── photos/dog/
 │
-├── app.py                       # Main application script
+├── app.py 
+├── meme.py                      # Main application script
 ├── requirements.txt             # Project dependencies
 └── README.md                    # Project documentation
+```
