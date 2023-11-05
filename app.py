@@ -1,74 +1,73 @@
-import random
+# app.py
+
 import os
+import random
 import requests
-from flask import Flask, render_template, abort, request
+from flask import Flask, render_template, request
+from QuoteEngine import Ingestor
+from MemeEngine import MemeEngine
 
 app = Flask(__name__)
 
-# Configure the MemeEngine with the path to the static directory
-meme_engine = MemeEngine('./static')
+# Initialize MemeEngine with the path to the static directory
+meme = MemeEngine('./static')
 
+def setup():
+    """Load all resources."""
+    quote_files = ['./_data/DogQuotes/DogQuotesTXT.txt',
+                   './_data/DogQuotes/DogQuotesDOCX.docx',
+                   './_data/DogQuotes/DogQuotesPDF.pdf',
+                   './_data/DogQuotes/DogQuotesCSV.csv']
+    quotes = []
+    for f in quote_files:
+        try:
+            quotes.extend(Ingestor.parse(f))
+        except Exception as e:
+            print(f"Error parsing {f}: {e}")
+    images_path = "./_data/photos/dog/"
+    imgs = [os.path.join(images_path, f) for f in os.listdir(images_path) if f.endswith(('.jpg', '.png'))]
+    return quotes, imgs
+
+quotes, imgs = setup()
 
 @app.route('/')
 def meme_rand():
-    """Generate and display a random meme.
-
-    Selects a random image and a random quote, generates a meme,
-    and renders it on the homepage.
-    """
-    try:
-        # Assuming there's a function to get a random image path
-        img_path = get_random_image_path()
-        # Assuming there's a function to get a random quote
-        quote = get_random_quote()
-        # Generate meme with the MemeEngine
-        path = meme_engine.make_meme(img_path, quote.body, quote.author)
-        return render_template('meme.html', path=path)
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        abort(500)
-
+    """Generate a random meme."""
+    img = random.choice(imgs)
+    quote = random.choice(quotes)
+    path = meme.make_meme(img, quote.body, quote.author)
+    return render_template('meme.html', path=path)
 
 @app.route('/create', methods=['GET'])
 def meme_form():
-    """Render form for users to input their own quotes and select an image."""
+    """User input for meme information."""
     return render_template('meme_form.html')
-
 
 @app.route('/create', methods=['POST'])
 def meme_post():
-    """Create a user-defined meme.
+    """Create a user-defined meme."""
+    image_url = request.form['image_url']
+    body = request.form['body']
+    author = request.form['author']
 
-    Takes input from the form, generates a meme with the provided image
-    and quote, and renders the meme for the user.
-    """
-    try:
-        # Fetch form data
-        img_path = request.form['image_path']
-        body = request.form['body']
-        author = request.form['author']
+    img = None
+    if image_url:
+        img_response = requests.get(image_url)
+        if img_response.status_code == 200:
+            img = f'./static/{random.randint(0, 1000000)}.jpg'
+            with open(img, 'wb') as img_file:
+                img_file.write(img_response.content)
+        else:
+            print(f"Could not download image from {image_url}")
+            img = random.choice(imgs)  # Fallback to a random image
+    else:
+        img = random.choice(imgs)
 
-        # Generate meme with the MemeEngine
-        path = meme_engine.make_meme(img_path, body, author)
-        return render_template('meme.html', path=path)
-    except Exception as e:
-        print(f"An error occurred: {e}")
-        abort(500)
+    path = meme.make_meme(img, body, author)
+    if image_url:
+        os.remove(img)  # Clean up the downloaded image
 
+    return render_template('meme.html', path=path)
 
-def get_random_image_path() -> str:
-    """Retrieve a random image path from the images directory."""
-    images_path = './_data/photos/dog/'
-    images = os.listdir(images_path)
-    return os.path.join(images_path, random.choice(images))
-
-
-def get_random_quote():
-    """Retrieve a random quote using the QuoteEngine module."""
-    # Assuming there's a function in the Ingestor class to load all quotes
-    quotes = Ingestor.load_quotes('./_data/quotes')
-    return random.choice(quotes)
-
-
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run()

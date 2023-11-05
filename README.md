@@ -1,44 +1,54 @@
-Assignment 2: Meme Generator
+# pip install python-docx
 
-```
-meme-generator/
+pip install python-docx
+sudo apt-get install poppler-utils
+
+## Package
+- Flask
+- Python-docx
+- Pillow
+- Requests
+- Subprocess
+- ABC
+- os
+- Argparse
+
+
+
+## Project Diagram
+
+MemeGeneratorProject/
 │
-├── app.py                  # The Flask application.
-├── meme.py                 # The script to generate memes from the command line.
-│
-├── QuoteEngine/            # The module for ingesting quotes from various file types.
+├── MemeEngine/                  # Module for meme generation logic
 │   ├── __init__.py
-│   ├── QuoteModel.py       # Defines the QuoteModel class.
-│   ├── IngestorInterface.py# Abstract base class for ingestors.
-│   ├── CSVIngestor.py      # Defines the CSVIngestor class.
-│   ├── DocxIngestor.py     # Defines the DocxIngestor class.
-│   ├── PDFIngestor.py      # Defines the PDFIngestor class.
-│   ├── TextIngestor.py     # Defines the TextIngestor class.
-│   └── Ingestor.py         # Defines the Ingestor class that encapsulates all ingestors.
+│   ├── MemeEngine.py            # Core meme generation functionality
+│   └── fonts/                   # Directory for font files
+│       ├── Font1.ttf
+│       └── Font2.ttf
 │
-├── MemeEngine/             # The module for creating meme images.
+├── QuoteEngine/                 # Module for quote handling logic
 │   ├── __init__.py
-│   └── MemeEngine.py       # Defines the MemeEngine class.
+│   ├── IngestorInterface.py     # Interface for ingestors
+│   ├── Ingestor.py              # Ingestor for handling different file types
+│   ├── QuoteModel.py            # Model for quotes
+│   ├── CSVIngestor.py           # Ingestor for CSV files
+│   ├── DocxIngestor.py          # Ingestor for DOCX files
+│   ├── PDFIngestor.py           # Ingestor for PDF files
+│   └── TextIngestor.py          # Ingestor for text files
 │
-├── static/                 # Directory for static content like images and generated memes.
-│   └── ...
+├── static/                      # Static files (images, CSS, JS)
+│   ├── images/
+│   └── styles/
 │
-├── templates/              # Directory for Flask templates.
-│   └── ...
+├── templates/                   # HTML templates for the web interface
+│   ├── base.html
+│   ├── meme.html
+│   └── meme_form.html
 │
-├── _data/                  # Data directory for sample quotes, images, and fonts.
+├── _data/                       # Data files (quotes, images)
 │   ├── DogQuotes/
-│   │   ├── DogQuotesCSV.csv
-│   │   ├── DogQuotesDOCX.docx
-│   │   ├── DogQuotesPDF.pdf
-│   │   └── DogQuotesTXT.txt
-│   │
-│   ├── Fonts/
-│   │   └── LilitaOne-Regular.ttf
-│   │
-│   └── Photos/
-│       └── Dog/
-│           └── ...
+│   └── SimpleLines/
 │
-└── requirements.txt        # Python dependencies required for the project.
-```
+├── app.py                       # Main application script
+├── requirements.txt             # Project dependencies
+└── README.md                    # Project documentation
