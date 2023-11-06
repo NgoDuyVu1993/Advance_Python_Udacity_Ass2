@@ -1,61 +1,70 @@
+# meme.py
+
 import os
 import random
 import argparse
-
-from MemeEngine import MemeEngine
 from QuoteEngine import Ingestor, QuoteModel
+from MemeEngine import MemeEngine
 
 def generate_meme(path=None, body=None, author=None):
     """Generate a meme given an image path and a quote.
 
-    If any argument is not defined, a random selection is used.
+    Args:
+        path (str): Path to an image file.
+        body (str): Quote body to add to the image.
+        author (str): Quote author to add to the image.
 
-    :param path: str - the file location for the input image.
-    :param body: str - the body of the quote.
-    :param author: str - the author of the quote.
-    :return: str - the file path to the output image.
+    Returns:
+        str: The file path to the generated meme.
     """
     img = None
-    quote = None
 
     if path is None:
-        imgs = "./_data/photos/dog/"
-        imgs = [os.path.join(imgs, name) for name in os.listdir(imgs)]
+        images_path = "./_data/photos/dog/"
+        imgs = [
+            os.path.join(images_path, name) for name in os.listdir(images_path)
+            if os.path.splitext(name)[1] in ('.jpg', '.png')
+        ]
         img = random.choice(imgs)
     else:
-        img = path[0]
+        img = path
 
     if body is None:
-        quote_files = ['./_data/DogQuotes/DogQuotesTXT.txt',
-                       './_data/DogQuotes/DogQuotesDOCX.docx',
-                       './_data/DogQuotes/DogQuotesPDF.pdf',
-                       './_data/DogQuotes/DogQuotesCSV.csv']
+        quote_files = [
+            './_data/DogQuotes/DogQuotesTXT.txt',
+            './_data/DogQuotes/DogQuotesDOCX.docx',
+            './_data/DogQuotes/DogQuotesPDF.pdf',
+            './_data/DogQuotes/DogQuotesCSV.csv'
+        ]
         quotes = []
-        for f in quote_files:
-            quotes.extend(Ingestor.parse(f))
-
+        for file_path in quote_files:
+            try:
+                quotes.extend(Ingestor.parse(file_path))
+            except ValueError as e:
+                print(f"Could not parse file {file_path}: {e}")
         quote = random.choice(quotes)
-    else:
-        if author is None:
-            raise Exception('Author required if body is provided')
-        quote = QuoteModel(body, author)
+        body = quote.body
+        author = quote.author
 
-    meme = MemeEngine('./static')
-    path = meme.make_meme(img, quote.body, quote.author)
+    if body and not author:
+        raise ValueError("Author is required if body is provided.")
+
+    meme = MemeEngine('./tmp')
+    path = meme.make_meme(img, body, author)
     return path
 
 def main():
-    """Command-line interface for the meme generator script."""
-    parser = argparse.ArgumentParser(description='Generate a Meme')
-    parser.add_argument('--path', type=str, default=None,
-                        help='path to an image file')
-    parser.add_argument('--body', type=str, default=None,
-                        help='quote body to add to the image')
-    parser.add_argument('--author', type=str, default=None,
-                        help='quote author to add to the image')
-    args = parser.parse_args()
+    """Process command-line arguments and generate a meme."""
+    parser = argparse.ArgumentParser(description="Meme Generator CLI")
+    parser.add_argument('--path', type=str, help="Path to an image file.")
+    parser.add_argument('--body', type=str, help="Quote body to add to the image.")
+    parser.add_argument('--author', type=str, help="Quote author to add to the image.")
 
-    print(generate_meme(args.path, args.body, args.author))
+    args = parser.parse_args()
+    if args.body and not args.author:
+        parser.error("--author is required when --body is provided.")
+    meme_path = generate_meme(args.path, args.body, args.author)
+    print(f"Meme created at: {meme_path}")
 
 if __name__ == "__main__":
     main()

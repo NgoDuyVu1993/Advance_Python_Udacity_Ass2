@@ -13,26 +13,33 @@ app = Flask(__name__)
 meme = MemeEngine('./static')
 
 def setup():
-    """Load all resources."""
-    quote_files = ['./_data/DogQuotes/DogQuotesTXT.txt',
-                   './_data/DogQuotes/DogQuotesDOCX.docx',
-                   './_data/DogQuotes/DogQuotesPDF.pdf',
-                   './_data/DogQuotes/DogQuotesCSV.csv']
+    """Load all resources and return quotes and images."""
+    quote_files = [
+        './_data/DogQuotes/DogQuotesTXT.txt',
+        './_data/DogQuotes/DogQuotesDOCX.docx',
+        './_data/DogQuotes/DogQuotesPDF.pdf',
+        './_data/DogQuotes/DogQuotesCSV.csv'
+    ]
     quotes = []
-    for f in quote_files:
+    for file_path in quote_files:
         try:
-            quotes.extend(Ingestor.parse(f))
-        except Exception as e:
-            print(f"Error parsing {f}: {e}")
+            quotes.extend(Ingestor.parse(file_path))
+        except FileNotFoundError as e:
+            print(f"Error: File not found {file_path}: {e}")
+        except ValueError as e:
+            print(f"Error: Value error parsing {file_path}: {e}")
     images_path = "./_data/photos/dog/"
-    imgs = [os.path.join(images_path, f) for f in os.listdir(images_path) if f.endswith(('.jpg', '.png'))]
+    imgs = [
+        os.path.join(images_path, file_name) for file_name in os.listdir(images_path)
+        if os.path.splitext(file_name)[1] in ('.jpg', '.png')
+    ]
     return quotes, imgs
 
 quotes, imgs = setup()
 
 @app.route('/')
 def meme_rand():
-    """Generate a random meme."""
+    """Generate and display a random meme."""
     img = random.choice(imgs)
     quote = random.choice(quotes)
     path = meme.make_meme(img, quote.body, quote.author)
@@ -40,12 +47,12 @@ def meme_rand():
 
 @app.route('/create', methods=['GET'])
 def meme_form():
-    """User input for meme information."""
+    """Display form for user to input meme information."""
     return render_template('meme_form.html')
 
 @app.route('/create', methods=['POST'])
 def meme_post():
-    """Create a user-defined meme."""
+    """Create and display a user-defined meme."""
     image_url = request.form['image_url']
     body = request.form['body']
     author = request.form['author']
@@ -54,7 +61,7 @@ def meme_post():
     if image_url:
         img_response = requests.get(image_url)
         if img_response.status_code == 200:
-            img = f'./static/{random.randint(0, 1000000)}.jpg'
+            img = os.path.join('./static', f'{random.randint(0, 1000000)}.jpg')
             with open(img, 'wb') as img_file:
                 img_file.write(img_response.content)
         else:
