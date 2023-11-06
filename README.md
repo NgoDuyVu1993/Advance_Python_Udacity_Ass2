@@ -11,7 +11,7 @@ Run the Application Commandline
 ```
 python3 meme.py --path _data/photos/dog/xander_1.jpg --body "I feel Blue" --author "mr peanutbutter"
 ```
-<img src="https://github.com/NgoDuyVu1993/Advance_Python_Udacity_Ass2/blob/main/test/Test_app.gif">
+<img src="https://github.com/NgoDuyVu1993/Advance_Python_Udacity_Ass2/blob/main/test/Test_meme.gif">
 <img src="https://github.com/NgoDuyVu1993/Advance_Python_Udacity_Ass2/tree/main/test/Test_meme.gif">
 
 
