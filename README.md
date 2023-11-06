@@ -1,9 +1,29 @@
-# pip install python-docx
+# Meme Generator
+
+Run the Application Web Interface
+```
+export FLASK_APP=app.py
+flask run --host 0.0.0.0 --port 3000 --reload
+```
+![](https://github.com/NgoDuyVu1993/Advance_Python_Udacity_Ass2/tree/main/test/Test_app.gif)
+
+Run the Application Commandline
+```
+python3 meme.py --path _data/photos/dog/xander_1.jpg --body "I feel Blue" --author "mr peanutbutter"
+```
+![](https://github.com/NgoDuyVu1993/Advance_Python_Udacity_Ass2/tree/main/test/Test_meme.gif)
+
+
+### Install Package for Udacity Workspace Environment
 ```
 pip install python-docx
 sudo apt-get install poppler-utils
 ```
 
+### Install Package for Local Machine 
+```
+pip install -r requirements.txt
+```
 ## Package
 - Flask
 - Python-docx
@@ -51,7 +71,7 @@ MemeGeneratorProject/
 │
 ├── _data/                       # Data files (quotes, images)
 │   ├── DogQuotes/
-│   └── SimpleLines/
+│   ├── SimpleLines/
 │   └── photos/dog/
 │
 ├── app.py 
