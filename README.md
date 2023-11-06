@@ -5,13 +5,13 @@ Run the Application Web Interface
 export FLASK_APP=app.py
 flask run --host 0.0.0.0 --port 3000 --reload
 ```
-![](https://github.com/NgoDuyVu1993/Advance_Python_Udacity_Ass2/tree/main/test/Test_app.gif)
+<img src="https://github.com/NgoDuyVu1993/Advance_Python_Udacity_Ass2/blob/main/test/Test_app.gif">
 
 Run the Application Commandline
 ```
 python3 meme.py --path _data/photos/dog/xander_1.jpg --body "I feel Blue" --author "mr peanutbutter"
 ```
-![](https://github.com/NgoDuyVu1993/Advance_Python_Udacity_Ass2/tree/main/test/Test_meme.gif)
+<img src="https://github.com/NgoDuyVu1993/Advance_Python_Udacity_Ass2/tree/main/test/Test_meme.gif">
 
 
 ### Install Package for Udacity Workspace Environment
